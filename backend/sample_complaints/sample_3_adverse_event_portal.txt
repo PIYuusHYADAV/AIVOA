@@ -1,0 +1,13 @@
+[Customer Portal Message]
+Submitted by: Rohit Malhotra
+Product mentioned: Amoxiclav 625 (the antibiotic tablets)
+
+message:
+"my father took one of these tablets yesterday night and within an hour he had really bad
+itching all over and his face looked swollen, we rushed him to the hospital emergency. doctor
+said looked like a severe allergic reaction. we still have the strip, batch printed on it looks
+like AMX625-L118, expiry printed as 04/2027, don't remember manufacturing date. we bought maybe
+10 tablets total from the strip, only one was taken. this is scary and we want the company to
+know immediately, is this a known issue with this batch??"
+
+logged: 22-Jul, portal auto-timestamp

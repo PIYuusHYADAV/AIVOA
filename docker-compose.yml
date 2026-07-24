@@ -1,0 +1,77 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: aivoa_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: aivoa_complaints
+    ports:
+      - "5432:5432"
+    volumes:
+      - aivoa_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d aivoa_complaints"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - aivoa_net
+
+  # Optional: lightweight web UI to browse the DB at http://localhost:8080
+  # (server: postgres, user: postgres, password: postgres, db: aivoa_complaints)
+  adminer:
+    image: adminer:4.8.1
+    container_name: aivoa_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - aivoa_net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aivoa_backend
+    restart: unless-stopped
+    environment:
+      GROQ_API_KEY: ${GROQ_API_KEY:?Set GROQ_API_KEY in a .env file next to docker-compose.yml}
+      GROQ_MODEL: ${GROQ_MODEL:-gemma2-9b-it}
+      GROQ_FALLBACK_MODEL: ${GROQ_FALLBACK_MODEL:-llama-3.3-70b-versatile}
+      # "postgres" here is the service name above -- Docker's internal DNS
+      # resolves it to the postgres container's IP on the aivoa_net network.
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/aivoa_complaints
+      CORS_ORIGINS: http://localhost:3000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app        # live code reload during development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - aivoa_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aivoa_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - aivoa_net
+
+networks:
+  aivoa_net:
+    driver: bridge
+
+volumes:
+  aivoa_pg_data:
