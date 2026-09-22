@@ -6,7 +6,7 @@ from app.db import Base, engine
 from app.routers import extract, chat, complaints
 
 settings = get_settings()
-
+asdaslmdmlasmasm
 app = FastAPI(
     title="AIVOA Customer Complaint Management System",
     description="AI-powered complaint intake for pharmaceutical (API/FDF) manufacturing QMS.",
