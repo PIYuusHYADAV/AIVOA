@@ -12,7 +12,7 @@ app = FastAPI(
     description="AI-powered complaint intake for pharmaceutical (API/FDF) manufacturing QMS.",
     version="1.0.0",
 )
-
+masodjopasdpadpa
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
